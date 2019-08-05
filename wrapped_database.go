@@ -82,7 +82,11 @@ func (wd *WrappedDatabase) RunCommand(ctx context.Context, runCommand interface{
 	ctx, span := roundtripTrackingSpan(ctx, "go.mongodb.org/mongo-driver.Database.RunCommand")
 	defer span.end(ctx)
 
-	return wd.db.RunCommand(ctx, runCommand, opts...)
+	res := wd.db.RunCommand(ctx, runCommand, opts...)
+	if res.Err() != nil {
+		span.setError(res.Err())
+	}
+	return res
 }
 
 func (wd *WrappedDatabase) WriteConcern() *writeconcern.WriteConcern { return wd.db.WriteConcern() }

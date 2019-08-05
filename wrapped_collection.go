@@ -144,28 +144,45 @@ func (wc *WrappedCollection) FindOne(ctx context.Context, filter interface{}, op
 	ctx, span := roundtripTrackingSpan(ctx, "go.mongodb.org/mongo-driver.Collection.FindOne")
 	defer span.end(ctx)
 
-	return wc.coll.FindOne(ctx, filter, opts...)
+	res := wc.coll.FindOne(ctx, filter, opts...)
+	if res.Err() != nil {
+		span.setError(res.Err())
+	}
+	return res
 }
 
 func (wc *WrappedCollection) FindOneAndDelete(ctx context.Context, filter interface{}, opts ...*options.FindOneAndDeleteOptions) *mongo.SingleResult {
 	ctx, span := roundtripTrackingSpan(ctx, "go.mongodb.org/mongo-driver.Collection.FindOneAndDelete")
 	defer span.end(ctx)
 
-	return wc.coll.FindOneAndDelete(ctx, filter, opts...)
+	res := wc.coll.FindOneAndDelete(ctx, filter, opts...)
+
+	if res.Err() != nil {
+		span.setError(res.Err())
+	}
+	return res
 }
 
 func (wc *WrappedCollection) FindOneAndReplace(ctx context.Context, filter, replacement interface{}, opts ...*options.FindOneAndReplaceOptions) *mongo.SingleResult {
 	ctx, span := roundtripTrackingSpan(ctx, "go.mongodb.org/mongo-driver.Collection.FindOneAndReplace")
 	defer span.end(ctx)
 
-	return wc.coll.FindOneAndReplace(ctx, filter, replacement, opts...)
+	res := wc.coll.FindOneAndReplace(ctx, filter, replacement, opts...)
+	if res.Err() != nil {
+		span.setError(res.Err())
+	}
+	return res
 }
 
 func (wc *WrappedCollection) FindOneAndUpdate(ctx context.Context, filter, update interface{}, opts ...*options.FindOneAndUpdateOptions) *mongo.SingleResult {
 	ctx, span := roundtripTrackingSpan(ctx, "go.mongodb.org/mongo-driver.Collection.FindOneAndUpdate")
 	defer span.end(ctx)
 
-	return wc.coll.FindOneAndUpdate(ctx, filter, update, opts...)
+	res := wc.coll.FindOneAndUpdate(ctx, filter, update, opts...)
+	if res.Err() != nil {
+		span.setError(res.Err())
+	}
+	return res
 }
 
 func (wc *WrappedCollection) Indexes() mongo.IndexView { return wc.coll.Indexes() }
